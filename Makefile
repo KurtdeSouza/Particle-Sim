@@ -1,9 +1,18 @@
 CXX = g++
-CXXFLAGS = -std=c++17 $(shell pkg-config --cflags sdl2)
+CXXFLAGS = -std=c++17 -Wall $(shell pkg-config --cflags sdl2)
 LDFLAGS = $(shell pkg-config --libs sdl2)
 
-sim: render.cpp
-	$(CXX) render.cpp -o sim $(CXXFLAGS) $(LDFLAGS)
+SRCS = $(wildcard ./src/*.cpp)
+OBJS = $(SRCS:.cpp=.o)
+TARGET = sim
+
+$(TARGET): $(OBJS)
+	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f sim
+	rm -f $(OBJS) $(TARGET)
+
+.PHONY: clean

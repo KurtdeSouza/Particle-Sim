@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
-
+#include "Particle.h"
+#include <vector>
 int main(int argc, char* argv[]) {
     // 1. Initialize SDL Video Subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -32,7 +33,10 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
-
+    std::vector<Particle> particles;
+    for(int i = 0; i < 1000; i++){
+        particles.emplace_back(i, i, 0, 0);
+    }
     // 4. The Event and Main Loop
     SDL_Event e;
     int quit = 0;
@@ -45,11 +49,16 @@ int main(int argc, char* argv[]) {
         }
 
         // Set background color to Black (RGBA: 0, 0, 0, 255)
+        
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         
         // Clear the screen with the chosen color
         SDL_RenderClear(renderer);
-        
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        for(Particle p : particles){
+            SDL_RenderDrawPoint(renderer, p.get_pos_x(), p.get_pos_y());
+
+        }
         // Update the screen with the rendering actions
         SDL_RenderPresent(renderer);
     }
