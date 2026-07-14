@@ -14,6 +14,8 @@ public:
     void set_speed_y(float new_speed_y);
     int get_pos_x();
     int get_pos_y();
-
+    float get_speed_x();
+    float get_speed_y();
+    void speed_update();
 };
 

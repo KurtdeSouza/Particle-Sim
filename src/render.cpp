@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "Particle.h"
 #include <vector>
+#include <random>
+#include <iostream>
 int main(int argc, char* argv[]) {
     // 1. Initialize SDL Video Subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -33,10 +35,25 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
+
+    // make random particle list
+    float min_val = -5.0f;
+    float max_val = 5.0f;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> distr(min_val, max_val);
+    float random_num_x, random_num_y;
+     
     std::vector<Particle> particles;
     for(int i = 0; i < 1000; i++){
-        particles.emplace_back(i, i, 0, 0);
+        random_num_x = distr(gen);
+        random_num_y = distr(gen);
+        particles.emplace_back(i, i, random_num_x, random_num_y);
     }
+
+
+
+
     // 4. The Event and Main Loop
     SDL_Event e;
     int quit = 0;
@@ -55,7 +72,8 @@ int main(int argc, char* argv[]) {
         // Clear the screen with the chosen color
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        for(Particle p : particles){
+        for(Particle& p : particles){
+            p.speed_update();
             SDL_RenderDrawPoint(renderer, p.get_pos_x(), p.get_pos_y());
 
         }

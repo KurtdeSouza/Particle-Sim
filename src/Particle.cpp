@@ -1,4 +1,6 @@
 #include "Particle.h"
+#include <iostream>
+
 Particle::Particle(int pos_x, int pos_y, float speed_x, float speed_y){
     set_pos_x(pos_x);
     set_pos_y(pos_y);
@@ -24,3 +26,16 @@ int Particle::get_pos_x(){
 int Particle::get_pos_y(){
     return pos_y;
 };
+float Particle::get_speed_x(){
+    return speed_x;
+}
+float Particle::get_speed_y(){
+    return speed_y;
+}
+void Particle::speed_update(){
+    int new_pos_x = get_pos_x() + get_speed_x();
+    int new_pos_y = get_pos_y() + get_speed_y();
+
+    set_pos_x(new_pos_x);
+    set_pos_y(new_pos_y);
+}
