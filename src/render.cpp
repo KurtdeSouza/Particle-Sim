@@ -4,6 +4,9 @@
 #include <vector>
 #include <random>
 #include <iostream>
+#include "constants.h"
+
+
 int main(int argc, char* argv[]) {
     // 1. Initialize SDL Video Subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -16,8 +19,8 @@ int main(int argc, char* argv[]) {
         "Blank SDL2 Window",        // Window title
         SDL_WINDOWPOS_CENTERED,     // Initial x position
         SDL_WINDOWPOS_CENTERED,     // Initial y position
-        800,                        // Width, in pixels
-        600,                        // Height, in pixels
+        Consts::WIDTH,                        // Width, in pixels
+        Consts::HEIGHT,                        // Height, in pixels
         SDL_WINDOW_SHOWN            // Flags (makes the window visible)
     );
 
@@ -37,18 +40,25 @@ int main(int argc, char* argv[]) {
     }
 
     // make random particle list
-    float min_val = -5.0f;
-    float max_val = 5.0f;
+    float min_val = -3.0f;
+    float max_val = 3.0f;
+    int max_height = Consts::WIDTH;
+    int max_width = Consts::HEIGHT;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> distr(min_val, max_val);
+    std::uniform_int_distribution<int> distr_X(0, max_height);
+    std::uniform_int_distribution<int> distr_Y(0, max_width);
+
     float random_num_x, random_num_y;
-     
+    int rand_x, rand_y;
     std::vector<Particle> particles;
     for(int i = 0; i < 1000; i++){
         random_num_x = distr(gen);
         random_num_y = distr(gen);
-        particles.emplace_back(i, i, random_num_x, random_num_y);
+        rand_x = distr_X(gen);
+        rand_y = distr_Y(gen);
+        particles.emplace_back(rand_x, rand_y, random_num_x, random_num_y);
     }
 
 
@@ -74,6 +84,12 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         for(Particle& p : particles){
             p.speed_update();
+            if(p.bounce_check_x()){
+                p.bounce_x();
+            }
+            if(p.bounce_check_y()){
+                p.bounce_y();
+            }
             SDL_RenderDrawPoint(renderer, p.get_pos_x(), p.get_pos_y());
 
         }

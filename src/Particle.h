@@ -17,5 +17,9 @@ public:
     float get_speed_x();
     float get_speed_y();
     void speed_update();
+    bool bounce_check_x();
+    bool bounce_check_y();
+    void bounce_x();
+    void bounce_y();
 };
 
