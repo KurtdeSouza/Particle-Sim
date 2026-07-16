@@ -1,6 +1,7 @@
 #include "Particle.h"
 #include <iostream>
 #include "constants.h"
+
 Particle::Particle(int pos_x, int pos_y, float speed_x, float speed_y){
     set_pos_x(pos_x);
     set_pos_y(pos_y);
@@ -58,3 +59,5 @@ void Particle::bounce_x(){
 void Particle::bounce_y(){
     set_speed_y(-get_speed_y());
 }
+
+

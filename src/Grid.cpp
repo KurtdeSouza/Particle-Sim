@@ -1,60 +1,37 @@
 #include "Particle.h"
 #include <iostream>
 #include "constants.h"
-Particle::Particle(int pos_x, int pos_y, float speed_x, float speed_y){
-    set_pos_x(pos_x);
-    set_pos_y(pos_y);
-    set_speed_x(speed_x);
-    set_speed_y(speed_y);
-    
-}
-void Particle::set_pos_x(int new_pos_x){
-    pos_x = new_pos_x;
-}
-void Particle::set_pos_y(int new_pos_y){
-    pos_y = new_pos_y;
-}
-void Particle::set_speed_x(float new_speed_x){
-    speed_x = new_speed_x;
-}
-void Particle::set_speed_y(float new_speed_y){
-    speed_y = new_speed_y;
-}
-int Particle::get_pos_x(){
-    return pos_x;
-};
-int Particle::get_pos_y(){
-    return pos_y;
-};
-float Particle::get_speed_x(){
-    return speed_x;
-}
-float Particle::get_speed_y(){
-    return speed_y;
-}
-void Particle::speed_update(){
-    int new_pos_x = get_pos_x() + get_speed_x();
-    int new_pos_y = get_pos_y() + get_speed_y();
+#include "Cell.h"
+#include "Grid.h"
+#include <random>
 
-    set_pos_x(new_pos_x);
-    set_pos_y(new_pos_y);
+Grid::Grid(std::vector<Cell> cells){
+    set_cells(cells);
 }
-bool Particle::bounce_check_x(){
-    if(get_pos_x() >= Consts::WIDTH || get_pos_x() <= 0){
-        return true;
-    }
-    return false;
+void Grid::set_cells(std::vector<Cell> new_cells){
+    cells = new_cells;
 }
-bool Particle::bounce_check_y(){
-    if(get_pos_y() >= Consts::HEIGHT || get_pos_y() <= 0){
-        return true;
-    }
-    return false;
-}
+std::vector<Particle> Grid:: particle_init_rand(){
+        // make random particle list
+    float min_val = -3.0f;
+    float max_val = 3.0f;
+    int max_height = Consts::WIDTH;
+    int max_width = Consts::HEIGHT;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> distr(min_val, max_val);
+    std::uniform_int_distribution<int> distr_X(0, max_height);
+    std::uniform_int_distribution<int> distr_Y(0, max_width);
 
-void Particle::bounce_x(){
-    set_speed_x(-get_speed_x());
-}
-void Particle::bounce_y(){
-    set_speed_y(-get_speed_y());
+    float random_num_x, random_num_y;
+    int rand_x, rand_y;
+    std::vector<Particle> particles;
+    for(int i = 0; i < 1; i++){
+        random_num_x = distr(gen);
+        random_num_y = distr(gen);
+        rand_x = distr_X(gen);
+        rand_y = distr_Y(gen);
+        particles.emplace_back(rand_x, rand_y, random_num_x, random_num_y);
+    }
+    return particles;
 }

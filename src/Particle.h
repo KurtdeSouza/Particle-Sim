@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 class Particle{
 private:
     int pos_x;

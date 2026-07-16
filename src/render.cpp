@@ -5,9 +5,15 @@
 #include <random>
 #include <iostream>
 #include "constants.h"
-
+#include "Grid.h"
+#include "Cell.h"
 
 int main(int argc, char* argv[]) {
+    // 0. init simulation parameters:
+    std::vector<Cell> c{};
+    Grid grid(c);
+    std::vector<Particle> particles = grid.particle_init_rand();
+
     // 1. Initialize SDL Video Subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
@@ -39,31 +45,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // make random particle list
-    float min_val = -3.0f;
-    float max_val = 3.0f;
-    int max_height = Consts::WIDTH;
-    int max_width = Consts::HEIGHT;
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> distr(min_val, max_val);
-    std::uniform_int_distribution<int> distr_X(0, max_height);
-    std::uniform_int_distribution<int> distr_Y(0, max_width);
-
-    float random_num_x, random_num_y;
-    int rand_x, rand_y;
-    std::vector<Particle> particles;
-    for(int i = 0; i < 1000; i++){
-        random_num_x = distr(gen);
-        random_num_y = distr(gen);
-        rand_x = distr_X(gen);
-        rand_y = distr_Y(gen);
-        particles.emplace_back(rand_x, rand_y, random_num_x, random_num_y);
-    }
-
-
-
-
     // 4. The Event and Main Loop
     SDL_Event e;
     int quit = 0;
@@ -82,6 +63,19 @@ int main(int argc, char* argv[]) {
         // Clear the screen with the chosen color
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        //this should be done in grid class
+        // also should iterate by cell
+        /*
+        1. make grid instance
+        2. make particle vector
+        3. make cells with a given apothem to cover entire grid space assigning each cell its center, neighbor will have prev center + 2 * apothem
+        4. iterate over particle list and assign the particle to the correct cell
+        5. during render update iterate over cell list and compute collisions
+        
+        
+        
+        
+        */
         for(Particle& p : particles){
             p.speed_update();
             if(p.bounce_check_x()){
