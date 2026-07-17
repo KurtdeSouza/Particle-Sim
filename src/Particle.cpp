@@ -2,11 +2,12 @@
 #include <iostream>
 #include "constants.h"
 
-Particle::Particle(int pos_x, int pos_y, float speed_x, float speed_y){
+Particle::Particle(int pos_x, int pos_y, int radius, float speed_x, float speed_y){
     set_pos_x(pos_x);
     set_pos_y(pos_y);
     set_speed_x(speed_x);
     set_speed_y(speed_y);
+    set_radius(radius);
     
 }
 void Particle::set_pos_x(int new_pos_x){
@@ -21,9 +22,16 @@ void Particle::set_speed_x(float new_speed_x){
 void Particle::set_speed_y(float new_speed_y){
     speed_y = new_speed_y;
 }
+int Particle::set_radius(int new_radius){
+    radius = new_radius;
+}
 int Particle::get_pos_x(){
     return pos_x;
 };
+int Particle::get_radius(){
+    return radius;
+}
+
 int Particle::get_pos_y(){
     return pos_y;
 };

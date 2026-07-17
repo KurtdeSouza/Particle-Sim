@@ -7,8 +7,9 @@ private:
     int pos_y;
     float speed_x;
     float speed_y;
+    int radius;
 public:
-    Particle(int pos_x, int pos_y, float speed_x, float speed_y);
+    Particle(int pos_x, int pos_y, int radius, float speed_x, float speed_y);
     void set_pos_x(int new_pos_x);
     void set_pos_y(int new_pos_y);
     void set_speed_x(float new_speed_x);
@@ -22,5 +23,8 @@ public:
     bool bounce_check_y();
     void bounce_x();
     void bounce_y();
+    int set_radius(int new_radius);
+    int get_radius();
+
 };
 

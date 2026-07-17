@@ -11,8 +11,8 @@
 int main(int argc, char* argv[]) {
     // 0. init simulation parameters:
     std::vector<Cell> c{};
-    Grid grid(c);
-    std::vector<Particle> particles = grid.particle_init_rand();
+    std::vector<Particle> p{};
+    Grid grid(c, p);
 
     // 1. Initialize SDL Video Subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -66,6 +66,10 @@ int main(int argc, char* argv[]) {
         //this should be done in grid class
         // also should iterate by cell
         /*
+
+        need to do linear interpolation between frames for collision detection to determine if particles or walls collide to avoid tunneling
+        can perform sweep and prune (projection onto x axis and capture overlapping intervals) on each cell => this is uniform grid partitioning optimization + sweep and prune
+        can also eventually implement KD trees
         1. make grid instance
         2. make particle vector
         3. make cells with a given apothem to cover entire grid space assigning each cell its center, neighbor will have prev center + 2 * apothem
@@ -76,17 +80,8 @@ int main(int argc, char* argv[]) {
         
         
         */
-        for(Particle& p : particles){
-            p.speed_update();
-            if(p.bounce_check_x()){
-                p.bounce_x();
-            }
-            if(p.bounce_check_y()){
-                p.bounce_y();
-            }
-            SDL_RenderDrawPoint(renderer, p.get_pos_x(), p.get_pos_y());
-
-        }
+       grid.update(renderer);
+       
         // Update the screen with the rendering actions
         SDL_RenderPresent(renderer);
     }
