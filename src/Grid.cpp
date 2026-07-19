@@ -75,12 +75,13 @@ void Grid::draw_circle(Particle p, SDL_Renderer* renderer ){
 void Grid:: update(SDL_Renderer* renderer){
      for(Particle& p : particles){
         p.speed_update();
-        if(p.bounce_check_x()){
+        if(p.bounce_check_x_wall()){
             p.bounce_x();
         }
-        if(p.bounce_check_y()){
+        if(p.bounce_check_y_wall()){
             p.bounce_y();
         }
+        
         draw_circle(p, renderer);
 
     }

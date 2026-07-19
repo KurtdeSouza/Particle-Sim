@@ -19,11 +19,11 @@ public:
     float get_speed_x();
     float get_speed_y();
     void speed_update();
-    bool bounce_check_x();
-    bool bounce_check_y();
+    bool bounce_check_x_wall();
+    bool bounce_check_y_wall();
     void bounce_x();
     void bounce_y();
-    int set_radius(int new_radius);
+    void set_radius(int new_radius);
     int get_radius();
 
 };

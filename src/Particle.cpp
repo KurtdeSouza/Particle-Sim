@@ -22,7 +22,7 @@ void Particle::set_speed_x(float new_speed_x){
 void Particle::set_speed_y(float new_speed_y){
     speed_y = new_speed_y;
 }
-int Particle::set_radius(int new_radius){
+void Particle::set_radius(int new_radius){
     radius = new_radius;
 }
 int Particle::get_pos_x(){
@@ -48,13 +48,13 @@ void Particle::speed_update(){
     set_pos_x(new_pos_x);
     set_pos_y(new_pos_y);
 }
-bool Particle::bounce_check_x(){
+bool Particle::bounce_check_x_wall(){
     if(get_pos_x() >= Consts::WIDTH || get_pos_x() <= 0){
         return true;
     }
     return false;
 }
-bool Particle::bounce_check_y(){
+bool Particle::bounce_check_y_wall(){
     if(get_pos_y() >= Consts::HEIGHT || get_pos_y() <= 0){
         return true;
     }
