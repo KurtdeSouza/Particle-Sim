@@ -7,6 +7,8 @@
 #include "constants.h"
 #include "Grid.h"
 #include "Cell.h"
+#include <chrono>
+#include <thread>
 
 int main(int argc, char* argv[]) {
     // 0. init simulation parameters:
@@ -37,7 +39,7 @@ int main(int argc, char* argv[]) {
     }
 
     // 3. Create the Renderer to clear the screen
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
     if (renderer == NULL) {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
@@ -48,8 +50,13 @@ int main(int argc, char* argv[]) {
     // 4. The Event and Main Loop
     SDL_Event e;
     int quit = 0;
-    uint64_t tick, prev_tick = 0;
+    uint64_t tick= 0, prev_tick = 0, delta = 0;
+    int delay = 0;
+
+
     while (!quit) {
+        auto frameStart = std::chrono::steady_clock::now();
+
         // Handle events in the queue (e.g., clicking the 'X' button)
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
@@ -58,7 +65,6 @@ int main(int argc, char* argv[]) {
         }
         tick = SDL_GetTicks();
         // Set background color to Black (RGBA: 0, 0, 0, 255)
-        
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         
         // Clear the screen with the chosen color
@@ -85,7 +91,29 @@ int main(int argc, char* argv[]) {
        
         // Update the screen with the rendering actions
         SDL_RenderPresent(renderer);
+        /*
+        delta = tick - prev_tick;
+        
+        if (delta < Consts::FRAME_RATE){
+            delay = Consts::FRAME_RATE - delta;
+
+            SDL_Delay(delay);
+        } 
+
+        */
         prev_tick = tick;
+        
+
+
+        auto frameEnd = std::chrono::steady_clock::now();
+        std::chrono::duration<double, std::milli> frameTime = frameEnd - frameStart;
+
+        double targetFrameTimeMs = 1000.0 / 144.0;  // ~6.94ms for 144Hz
+        if (frameTime.count() < targetFrameTimeMs) {
+            std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(targetFrameTimeMs - frameTime.count()));
+        }    
+        
+
     }   
 
     // 5. Clean up and Resource Management
