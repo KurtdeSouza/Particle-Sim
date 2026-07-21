@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
     // 4. The Event and Main Loop
     SDL_Event e;
     int quit = 0;
+    uint64_t tick, prev_tick = 0;
     while (!quit) {
         // Handle events in the queue (e.g., clicking the 'X' button)
         while (SDL_PollEvent(&e) != 0) {
@@ -55,7 +56,7 @@ int main(int argc, char* argv[]) {
                 quit = 1;
             }
         }
-
+        tick = SDL_GetTicks();
         // Set background color to Black (RGBA: 0, 0, 0, 255)
         
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -80,11 +81,12 @@ int main(int argc, char* argv[]) {
         
         
         */
-       grid.update(renderer);
+       grid.update(renderer, tick, prev_tick);
        
         // Update the screen with the rendering actions
         SDL_RenderPresent(renderer);
-    }
+        prev_tick = tick;
+    }   
 
     // 5. Clean up and Resource Management
     SDL_DestroyRenderer(renderer);

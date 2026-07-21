@@ -27,7 +27,7 @@ void Grid:: set_particle_init_rand(std::vector<Particle> new_p){
     int radius = 10;
     float random_num_x, random_num_y;
     int rand_x, rand_y;
-    for(int i = 0; i < 100; i++){
+    for(int i = 0; i < 1; i++){
         random_num_x = distr(gen);
         random_num_y = distr(gen);
         rand_x = distr_X(gen);
@@ -72,9 +72,10 @@ void Grid::draw_circle(Particle p, SDL_Renderer* renderer ){
         }
     }
 }
-void Grid:: update(SDL_Renderer* renderer){
+void Grid:: update(SDL_Renderer* renderer, uint64_t tick, uint64_t prev_tick){
+    uint64_t delta =  tick - prev_tick;
      for(Particle& p : particles){
-        p.speed_update();
+        p.speed_update(delta);
         if(p.bounce_check_x_wall()){
             p.bounce_x();
         }

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cstdint>
 #include <vector>
 class Particle{
 private:
@@ -18,7 +18,7 @@ public:
     int get_pos_y();
     float get_speed_x();
     float get_speed_y();
-    void speed_update();
+    void speed_update(uint64_t tick);
     bool bounce_check_x_wall();
     bool bounce_check_y_wall();
     void bounce_x();

@@ -14,7 +14,7 @@ public:
     Grid(std::vector<Cell> cells, std::vector<Particle> new_particles);
     void set_cells(std::vector<Cell> new_cells);
     void set_particle_init_rand(std::vector<Particle> new_p);
-    void update(SDL_Renderer* renderer);
+    void update(SDL_Renderer* renderer, uint64_t tick, uint64_t prev_tick);
     void draw_circle(Particle p, SDL_Renderer* renderer );
     
 };

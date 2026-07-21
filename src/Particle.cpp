@@ -41,30 +41,32 @@ float Particle::get_speed_x(){
 float Particle::get_speed_y(){
     return speed_y;
 }
-void Particle::speed_update(){
-    int new_pos_x = get_pos_x() + get_speed_x();
-    int new_pos_y = get_pos_y() + get_speed_y();
+void Particle::speed_update(uint64_t delta){
+    int new_pos_x = get_pos_x() + get_speed_x()*delta;
+    int new_pos_y = get_pos_y() + get_speed_y()*delta;
 
     set_pos_x(new_pos_x);
     set_pos_y(new_pos_y);
 }
 bool Particle::bounce_check_x_wall(){
-    if(get_pos_x() >= Consts::WIDTH || get_pos_x() <= 0){
+    if((get_pos_x() + get_radius() >= Consts::WIDTH && get_speed_x() > 0) || (get_pos_x() - get_radius() <= 0 && get_speed_x() < 0)){
         return true;
     }
     return false;
 }
 bool Particle::bounce_check_y_wall(){
-    if(get_pos_y() >= Consts::HEIGHT || get_pos_y() <= 0){
+    if((get_pos_y() + get_radius() >= Consts::HEIGHT && get_speed_y() > 0)|| (get_pos_y() - get_radius() <= 0 && get_speed_y() < 0)){
         return true;
     }
     return false;
 }
 
 void Particle::bounce_x(){
+    std::cout << "X pos: " << get_pos_x() << "\n";
     set_speed_x(-get_speed_x());
 }
 void Particle::bounce_y(){
+     std::cout << "Y pos: " << get_pos_y() << "\n";
     set_speed_y(-get_speed_y());
 }
 
