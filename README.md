@@ -24,3 +24,16 @@ A particle simulator currently with basic functionality like window rendering an
 - implement custom pool allocator for faster memory allocation
 - implement benchmarking to capture render time and other resource use
 - implement new forces (gravity, friction, magnetic etc...)
+
+## Rough Metrics:
+### Brute Force Collision Calculation:
+we check every pair of particles so cost is:
+(n(n-1))/2 ~ n^2
+
+Particles	Pairs	    Time
+10	        45	        25μs	    
+100	        4,950	    300μs
+500	        124,750	    7,500μs
+1000	    499,500	    25,575μs
+2000	    1,999,000	100,312μs
+
