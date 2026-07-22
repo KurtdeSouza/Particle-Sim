@@ -60,67 +60,81 @@ int main(int argc, char* argv[]) {
     uint64_t tick= 0, prev_tick = 0, delta = 0;
     int delay = 0;
 
-
+    bool pause = false;
     while (!quit) {
+        
         auto frameStart = std::chrono::steady_clock::now();
 
         // Handle events in the queue (e.g., clicking the 'X' button)
-        while (SDL_PollEvent(&e) != 0) {
+
+        while (SDL_PollEvent(&e) != 0 ) {
             if (e.type == SDL_QUIT) {
                 quit = 1;
             }
+            else if (e.type == SDL_KEYDOWN) {
+            // Filter specifically for the spacebar
+            if (e.key.keysym.sym == SDLK_SPACE ) {
+                if(pause == true){
+                    pause = false;
+                    prev_tick = SDL_GetTicks(); //need to get new tick count since speed (pos change) is dependant on tick delta
+                }else{
+                    pause = true;
+                }
+            }
         }
-        tick = SDL_GetTicks();
-        // Set background color to Black (RGBA: 0, 0, 0, 255)
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        
-        // Clear the screen with the chosen color
-        SDL_RenderClear(renderer);
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        //this should be done in grid class
-        // also should iterate by cell
-        /*
+        }
+        if(pause == false){
+            tick = SDL_GetTicks();
+            // Set background color to Black (RGBA: 0, 0, 0, 255)
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            
+            // Clear the screen with the chosen color
+            SDL_RenderClear(renderer);
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            //this should be done in grid class
+            // also should iterate by cell
+            /*
 
-        need to do linear interpolation between frames for collision detection to determine if particles or walls collide to avoid tunneling
-        can perform sweep and prune (projection onto x axis and capture overlapping intervals) on each cell => this is uniform grid partitioning optimization + sweep and prune
-        can also eventually implement KD trees
-        1. make grid instance
-        2. make particle vector
-        3. make cells with a given apothem to cover entire grid space assigning each cell its center, neighbor will have prev center + 2 * apothem
-        4. iterate over particle list and assign the particle to the correct cell
-        5. during render update iterate over cell list and compute collisions
+            need to do linear interpolation between frames for collision detection to determine if particles or walls collide to avoid tunneling
+            can perform sweep and prune (projection onto x axis and capture overlapping intervals) on each cell => this is uniform grid partitioning optimization + sweep and prune
+            can also eventually implement KD trees
+            1. make grid instance
+            2. make particle vector
+            3. make cells with a given apothem to cover entire grid space assigning each cell its center, neighbor will have prev center + 2 * apothem
+            4. iterate over particle list and assign the particle to the correct cell
+            5. during render update iterate over cell list and compute collisions
+            
+            
+            
+            
+            */
+            grid.update(renderer, tick, prev_tick);
         
-        
-        
-        
-        */
-       grid.update(renderer, tick, prev_tick);
-       
-        // Update the screen with the rendering actions
-        SDL_RenderPresent(renderer);
-        /*
-        delta = tick - prev_tick;
-        
-        if (delta < Consts::FRAME_RATE){
-            delay = Consts::FRAME_RATE - delta;
+            // Update the screen with the rendering actions
+            SDL_RenderPresent(renderer);
+            /*
+            delta = tick - prev_tick;
+            
+            if (delta < Consts::FRAME_RATE){
+                delay = Consts::FRAME_RATE - delta;
 
-            SDL_Delay(delay);
-        } 
+                SDL_Delay(delay);
+            } 
 
-        */
-        prev_tick = tick;
-        
+            */
+            prev_tick = tick;
+            
 
 
-        auto frameEnd = std::chrono::steady_clock::now();
-        std::chrono::duration<double, std::milli> frameTime = frameEnd - frameStart;
+            auto frameEnd = std::chrono::steady_clock::now();
+            std::chrono::duration<double, std::milli> frameTime = frameEnd - frameStart;
 
-        double targetFrameTimeMs = 1000.0 / 144.0;  // ~6.94ms for 144Hz
-        if (frameTime.count() < targetFrameTimeMs) {
-            std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(targetFrameTimeMs - frameTime.count()));
-        }    
-        
-
+            double targetFrameTimeMs = Consts::FRAME_RATE;  // ~6.94ms for 144Hz
+            if (frameTime.count() < targetFrameTimeMs) {
+                std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(targetFrameTimeMs - frameTime.count()));
+            }    
+            
+        }
     }   
 
     // 5. Clean up and Resource Management
