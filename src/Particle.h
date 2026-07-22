@@ -29,5 +29,8 @@ public:
     std::vector<float> get_dot(Particle &p, std::vector<float> normal);
     void collide(Particle &p);
     bool check_part_collision(Particle &p);
+    void position_correction(Particle& p, std::vector<float> normals);
+    float calc_distance(Particle &p);
+    float calc_radius_diff(Particle &p);
 };
 

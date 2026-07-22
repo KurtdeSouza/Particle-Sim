@@ -67,12 +67,24 @@ void Particle::bounce_wall_y(){
     if(bounce_check_y_wall()){set_speed_y(-get_speed_y());}
 
 }
+void Particle::position_correction(Particle& p, std::vector<float> normals){
+    float corr = calc_radius_diff(p) - calc_distance(p);
+    float new_pos_x1 = get_pos_x() - corr/2 * normals[0];
+    float new_pos_y1 = get_pos_y() - corr/2 * normals[1];
+    float new_pos_x2 = p.get_pos_x() + corr/2 * normals[0];
+    float new_pos_y2 = p.get_pos_y() + corr/2 * normals[1];
+    set_pos_x(new_pos_x1);
+    set_pos_y(new_pos_y1);
+    p.set_pos_x(new_pos_x2);
+    p.set_pos_y(new_pos_y2);
+}
 std::vector<float> Particle::get_normal(Particle &p){
     float rel_x = p.get_pos_x() - get_pos_x();
     float rel_y = p.get_pos_y() - get_pos_y();
     float root = std::sqrt(std::pow(rel_x, 2) + std::pow(rel_y, 2)); //(691-636)^2 + (300-300)^2
     float norm_x = rel_x/root;
     float norm_y = rel_y/root;
+    position_correction(p, {norm_x, norm_y});
     return {norm_x, norm_y};
 }
 std::vector<float> Particle::get_dot(Particle &p, std::vector<float> normal){
@@ -94,13 +106,24 @@ void Particle::collide(Particle &p){
     p.set_speed_y(new_speed_y2);
 
 }
-bool Particle::check_part_collision(Particle &p){
+float Particle::calc_distance(Particle &p){
     float delta_x = std::abs(get_pos_x() - p.get_pos_x());
     float delta_y = std::abs(get_pos_y() - p.get_pos_y());
-
+//should implement particle overlap correction so that particles don't stick together from overlap
     float distance = std::sqrt(std::pow(delta_x, 2) + std::pow(delta_y, 2));
+    return distance;
+}
+float Particle::calc_radius_diff(Particle &p){
     float tot_radius = get_radius() + p.get_radius();
-    if (tot_radius > distance){
+    return tot_radius;
+
+}
+bool Particle::check_part_collision(Particle &p){
+
+    float distance = calc_distance(p);
+    float tot_radius = calc_radius_diff(p);
+    if (tot_radius >= distance){
+        
         return true;
     }else{
         return false;

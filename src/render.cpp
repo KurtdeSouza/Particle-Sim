@@ -14,8 +14,15 @@ int main(int argc, char* argv[]) {
     // 0. init simulation parameters:
     std::vector<Cell> c{};
     std::vector<Particle> p{};
-    Grid grid(c, p);
+     int num_part;
+    if(argc > 1){
+        num_part = std::stoi(argv[1]);
 
+    }else{
+        num_part = 10;
+
+    }
+    Grid grid(c, p, num_part);
     // 1. Initialize SDL Video Subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());

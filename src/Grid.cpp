@@ -5,9 +5,9 @@
 #include "Grid.h"
 #include <random>
 
-Grid::Grid(std::vector<Cell> cells, std::vector<Particle> particles){
+Grid::Grid(std::vector<Cell> cells, std::vector<Particle> particles, int num_particles){
     set_cells(cells);
-    set_particle_init_rand(particles, 10);
+    set_particle_init_rand(particles, num_particles);
     //custom_particle_init(particles);
 }
 void Grid::set_cells(std::vector<Cell> new_cells){

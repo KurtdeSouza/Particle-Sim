@@ -11,7 +11,7 @@ private:
     int height = Consts::HEIGHT;
     std::vector<Particle> particles;
 public:
-    Grid(std::vector<Cell> cells, std::vector<Particle> new_particles);
+    Grid(std::vector<Cell> cells, std::vector<Particle> new_particles, int number_particles);
     void set_cells(std::vector<Cell> new_cells);
     void set_particle_init_rand(std::vector<Particle> new_p, int num_particles);
     void update(SDL_Renderer* renderer, uint64_t tick, uint64_t prev_tick);
