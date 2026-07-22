@@ -4,7 +4,7 @@
 #include "Cell.h"
 #include "Grid.h"
 #include <random>
-
+#include <chrono>
 Grid::Grid(std::vector<Cell> cells, std::vector<Particle> particles, int num_particles){
     set_cells(cells);
     set_particle_init_rand(particles, num_particles);
@@ -95,8 +95,13 @@ void Grid::brute_force_particle_collision(){
 void Grid:: update(SDL_Renderer* renderer, uint64_t tick, uint64_t prev_tick){
     float delta =  (tick - prev_tick)/1000.0f;
     
-
+    auto start = std::chrono::high_resolution_clock::now();
     brute_force_particle_collision();
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::micro> elapsed = end - start;
+    std::cout << elapsed.count() << " microseconds\n";
     for(Particle& p : particles){
         p.speed_update(delta);
         p.bounce_wall_x();
