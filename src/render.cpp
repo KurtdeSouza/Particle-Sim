@@ -95,7 +95,6 @@ int main(int argc, char* argv[]) {
             // also should iterate by cell
             /*
 
-            need to do linear interpolation between frames for collision detection to determine if particles or walls collide to avoid tunneling
             can perform sweep and prune (projection onto x axis and capture overlapping intervals) on each cell => this is uniform grid partitioning optimization + sweep and prune
             can also eventually implement KD trees
             1. make grid instance
