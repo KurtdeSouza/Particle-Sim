@@ -38,3 +38,7 @@ we check every pair of particles so cost is:
 | 1000      | 499,500       | 25,575    | 0.051               |
 | 2000      | 1,999,000     | 100,312   | 0.050               |
 
+# TODO:
+- need to fix how I init grid, cells, and particles
+- maybe re organize render cpp to make more sense and be cleaner
+- need to init cell class to house the particle list before rendering starts then call update and cell iteration per frame
