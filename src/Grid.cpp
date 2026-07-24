@@ -5,13 +5,29 @@
 #include "Grid.h"
 #include <random>
 #include <chrono>
-Grid::Grid(std::vector<Cell> cells, std::vector<Particle> particles, int num_particles){
+#include <map>
+//edit map to be unordred map instead and make custom hash function
+Grid::Grid(std::map<std::pair<int, int>, Cell> cells, std::vector<Particle> particles, int num_particles){
     set_cells(cells);
     set_particle_init_rand(particles, num_particles);
     //custom_particle_init(particles);
+    set_cells(cells);
 }
-void Grid::set_cells(std::vector<Cell> new_cells){
-    cells = new_cells;
+void Grid::set_cells(std::map<std::pair<int, int>, Cell> new_cells){
+    int cell_start = 0;
+    int next_cell = Consts::RADIUS*2;
+    int cell_end = Consts::HEIGHT - next_cell;
+    /*
+    Plan for init cells:
+    1. create hash map (for grid's cells object) key = coords to a cell's top left corner. value = cell object
+    2. each cell object will be initialized with an empty neighbor and particle list
+    3. we pass over each key in the hash map and for each cell we assign neihgbors based on top left corner => 
+    cell1 + 2*radius = right neighbor starting point. for cell neighbors we store the KEY not the cell objects themselves
+    similarily we iterate over the particle vector and give references to the particles for the cell to manipulate
+    
+    
+    */
+
 }
 void Grid:: set_particle_init_rand(std::vector<Particle> new_p, int num_particles){
     float min_val = -3.0f;
@@ -92,12 +108,17 @@ void Grid::brute_force_particle_collision(){
         }
     }
 }
+/*
+void Grid:: refresh_cells(){
+
+}
+*/
 void Grid:: update(SDL_Renderer* renderer, uint64_t tick, uint64_t prev_tick){
     float delta =  (tick - prev_tick)/1000.0f;
     
     auto start = std::chrono::high_resolution_clock::now();
     brute_force_particle_collision();
-
+    //refresh_cells();
     auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double, std::micro> elapsed = end - start;
