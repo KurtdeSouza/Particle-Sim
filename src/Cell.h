@@ -14,6 +14,8 @@ public:
     void set_cell_coords(std::pair<int, int> cell_coords);
     void set_cell_neighbors(std::vector<std::pair<int, int>> cell_neihgbors);
     void set_side_length(int new_side_length);
-
+    void add_particle(int i);
+    std::vector<std::size_t> get_particles();
+    std::pair<int ,int> get_coords();
 
 };

@@ -31,7 +31,12 @@ float Particle::get_pos_x(){
 int Particle::get_radius(){
     return radius;
 }
-
+std::pair<int, int> Particle::get_int_coords(){
+    int x_pos =  static_cast<int>(get_pos_x());
+    int y_pos =  static_cast<int>(get_pos_y());
+    std::pair<int, int> coords = {x_pos, y_pos};
+    return coords;
+}
 float Particle::get_pos_y(){
     return pos_y;
 };

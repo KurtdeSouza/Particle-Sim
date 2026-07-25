@@ -32,5 +32,6 @@ public:
     void position_correction(Particle& p, std::vector<float> normals);
     float calc_distance(Particle &p);
     float calc_radius_diff(Particle &p);
+    std::pair<int, int> get_int_coords();
 };
 

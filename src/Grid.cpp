@@ -6,18 +6,52 @@
 #include <random>
 #include <chrono>
 #include <map>
+#include <cmath>
 //edit map to be unordred map instead and make custom hash function
 Grid::Grid(std::map<std::pair<int, int>, Cell> cells, std::vector<Particle> particles, int num_particles){
-    set_cells(cells);
     set_particle_init_rand(particles, num_particles);
     //custom_particle_init(particles);
-    set_cells(cells);
+    set_cells_init(cells);
 }
-void Grid::set_cells(std::map<std::pair<int, int>, Cell> new_cells){
-    int cell_start = 0;
-    int next_cell = Consts::RADIUS*2;
+void Grid::set_cells_init(std::map<std::pair<int, int>, Cell> new_cells){
+
+    int next_cell = 0;
     int cell_end = Consts::HEIGHT - next_cell;
+    while(next_cell + (Consts::SIDE_LENGTH) <= cell_end){
+        int y_start = 0;
+        while(y_start + (Consts::SIDE_LENGTH) <= cell_end){
+            std::pair<int, int> new_coords = {next_cell, y_start};
+            Cell new_cell(Consts::SIDE_LENGTH, new_coords, {}, {});
+            new_cells.insert({new_coords, new_cell});
+            y_start += Consts::SIDE_LENGTH;
+        }
+        next_cell += Consts::SIDE_LENGTH;
+ 
+        
+    }
+
+    std::vector<std::pair<int, int>>  new_neighbors;
+    for (auto& [coords, cell] : new_cells) {
+        //right neighbor
+        if(coords.first + (Consts::SIDE_LENGTH*2)  <=cell_end){
+            new_neighbors.emplace_back(coords.first + Consts::SIDE_LENGTH, coords.second);
+        }
+        if(coords.second + (Consts::SIDE_LENGTH*2)  <= cell_end){
+            new_neighbors.emplace_back(coords.first, coords.second + Consts::SIDE_LENGTH);
+        }
+        if(coords.second + (Consts::SIDE_LENGTH*2)  <=cell_end && coords.first - Consts::SIDE_LENGTH >= 0){
+            new_neighbors.emplace_back(coords.first - Consts::SIDE_LENGTH, coords.second + Consts::SIDE_LENGTH);
+        }
+        if(coords.first + (Consts::SIDE_LENGTH*2)  <=cell_end && coords.second + (Consts::SIDE_LENGTH*2)){
+            new_neighbors.emplace_back(coords.first + Consts::SIDE_LENGTH, coords.second + Consts::SIDE_LENGTH);
+        }
+        cell.set_cell_neighbors(new_neighbors);
+    }
+    cells = new_cells;
+
+
     /*
+    int side_length, std::pair<int, int> cell_coords, std::vector<size_t> particles, std::vector<std::pair<int, int>> neighbors
     Plan for init cells:
     1. create hash map (for grid's cells object) key = coords to a cell's top left corner. value = cell object
     2. each cell object will be initialized with an empty neighbor and particle list
@@ -29,7 +63,65 @@ void Grid::set_cells(std::map<std::pair<int, int>, Cell> new_cells){
     */
 
 }
+int Grid::get_cell_length(){
+    return cell_length;
+}
+std::pair<int, int> Grid::get_closest_cell(std::pair<int, int> part_coords){
+           std::cout<< "partccc: " << part_coords.first << "," << part_coords.second << "\n";
+    std::cout << get_cell_length() << "\n" ;
+    int x = ((part_coords.first / get_cell_length()) * get_cell_length());
+    int y = ((part_coords.second / get_cell_length()) * get_cell_length());
+    std::cout << "x, y: " << x << "," << y << "\n";
+    return {x, y};
+}
+void Grid::populate_cells(){
+    std::cout << "particles" << particles.size() << "\n";
+    for(std::size_t i = 0; i < particles.size() ; i++){
+       std::pair<int, int> part_coords = particles[i].get_int_coords();
+       std::cout<< "part: " << part_coords.first << "," << part_coords.second << "\n";
+
+       std::pair<int, int> cell_coords = get_closest_cell(part_coords);
+       std::cout<<"cell: " <<cell_coords.first << "," << cell_coords.second << "\n";
+       if(cells.count(cell_coords) > 0){
+               cells.at(cell_coords).add_particle(i); // cell object, add particle index to the particle list
+
+       }
+
+    }
+
+
+}
+void Grid::cell_collision(){
+    for (auto& [coords, cell] : cells) {
+        //does not do neighboring cells yet => can just get particle list for neighboring cells and run the same check
+
+        std::vector<size_t> particle_list = cell.get_particles();
+        if(particle_list.size() > 1){
+            for(size_t i = 0; i < particle_list.size() - 1; i++){
+                Particle &p1 = particles.at(particle_list.at(i));
+                std::cout << p1.get_pos_x() << "fwesfsefsefsef\n";
+                for(size_t j = i + 1; j < particle_list.size(); j++){
+
+                    Particle &p2 = particles.at(particle_list.at(j));
+                    if(p1.check_part_collision(p2)){
+                        p1.collide(p2);
+                        std::cout << "COLLLLLLLLLLLLLLLLLLLLLL\n";
+                    }else{
+
+                    }
+                }
+            }
+            
+        }
+        cell.set_particles({});
+    }
+                   std::cout << "cell _collision\n";
+
+    
+    
+}
 void Grid:: set_particle_init_rand(std::vector<Particle> new_p, int num_particles){
+
     float min_val = -3.0f;
     float max_val = 3.0f;
     int max_height = Consts::WIDTH;
@@ -50,12 +142,13 @@ void Grid:: set_particle_init_rand(std::vector<Particle> new_p, int num_particle
         new_p.emplace_back(rand_x, rand_y, radius, random_num_x, random_num_y);
     }
     particles = new_p;
+
 }
 void Grid:: custom_particle_init(std::vector<Particle> new_p){
         // make custom particles to collide/test
-    new_p.emplace_back(300, 300, 20, 1000, 0);
+    new_p.emplace_back(0, 0, 10, 0.0f, 0);
 
-    new_p.emplace_back(600, 300, 40, -1000, 0);
+   // new_p.emplace_back(101, 101, 10, -100.0f, 0);
 
     particles = new_p;
 }
@@ -113,11 +206,17 @@ void Grid:: refresh_cells(){
 
 }
 */
+void Grid::cell_sweep_collision(){
+    populate_cells();
+    cell_collision();
+
+}
 void Grid:: update(SDL_Renderer* renderer, uint64_t tick, uint64_t prev_tick){
     float delta =  (tick - prev_tick)/1000.0f;
     
     auto start = std::chrono::high_resolution_clock::now();
-    brute_force_particle_collision();
+    cell_sweep_collision();
+    //brute_force_particle_collision();
     //refresh_cells();
     auto end = std::chrono::high_resolution_clock::now();
 

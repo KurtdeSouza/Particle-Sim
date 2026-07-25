@@ -29,7 +29,6 @@ int main(int argc, char* argv[]) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
-
     // 2. Create the Window
     SDL_Window* window = SDL_CreateWindow(
         "Blank SDL2 Window",        // Window title
@@ -39,13 +38,11 @@ int main(int argc, char* argv[]) {
         Consts::HEIGHT,                        // Height, in pixels
         SDL_WINDOW_SHOWN            // Flags (makes the window visible)
     );
-
     if (window == NULL) {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_Quit();
         return 1;
     }
-
     // 3. Create the Renderer to clear the screen
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
     if (renderer == NULL) {
@@ -54,7 +51,6 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
-
     // 4. The Event and Main Loop
     SDL_Event e;
     int quit = 0;
