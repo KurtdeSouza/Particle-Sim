@@ -67,21 +67,15 @@ int Grid::get_cell_length(){
     return cell_length;
 }
 std::pair<int, int> Grid::get_closest_cell(std::pair<int, int> part_coords){
-           std::cout<< "partccc: " << part_coords.first << "," << part_coords.second << "\n";
-    std::cout << get_cell_length() << "\n" ;
     int x = ((part_coords.first / get_cell_length()) * get_cell_length());
     int y = ((part_coords.second / get_cell_length()) * get_cell_length());
-    std::cout << "x, y: " << x << "," << y << "\n";
     return {x, y};
 }
 void Grid::populate_cells(){
-    std::cout << "particles" << particles.size() << "\n";
     for(std::size_t i = 0; i < particles.size() ; i++){
        std::pair<int, int> part_coords = particles[i].get_int_coords();
-       std::cout<< "part: " << part_coords.first << "," << part_coords.second << "\n";
 
        std::pair<int, int> cell_coords = get_closest_cell(part_coords);
-       std::cout<<"cell: " <<cell_coords.first << "," << cell_coords.second << "\n";
        if(cells.count(cell_coords) > 0){
                cells.at(cell_coords).add_particle(i); // cell object, add particle index to the particle list
 
@@ -99,13 +93,11 @@ void Grid::cell_collision(){
         if(particle_list.size() > 1){
             for(size_t i = 0; i < particle_list.size() - 1; i++){
                 Particle &p1 = particles.at(particle_list.at(i));
-                std::cout << p1.get_pos_x() << "fwesfsefsefsef\n";
                 for(size_t j = i + 1; j < particle_list.size(); j++){
 
                     Particle &p2 = particles.at(particle_list.at(j));
                     if(p1.check_part_collision(p2)){
                         p1.collide(p2);
-                        std::cout << "COLLLLLLLLLLLLLLLLLLLLLL\n";
                     }else{
 
                     }
@@ -115,7 +107,6 @@ void Grid::cell_collision(){
         }
         cell.set_particles({});
     }
-                   std::cout << "cell _collision\n";
 
     
     
