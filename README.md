@@ -38,6 +38,18 @@ we check every pair of particles so cost is:
 | 1000      | 499,500       | 25,575    | 0.051               |
 | 2000      | 1,999,000     | 100,312   | 0.050               |
 
+### spatial partitioning (Uniform Grid) Calculation:
+roughly O(n) if particles are evenly distributed across the grid.
+if concentrated into a few cells then complexity moves to roughly O(n^2)
+| Particles |Time (μs) | 
+|-----------|----------|
+| 1         | 15       | 
+| 10        | 20       |
+| 100       | 70       |
+| 500       | 800      |
+| 1000      | 1650     |
+| 2000      | 7000     |
+
 # TODO:
 - need to fix how I init grid, cells, and particles
 - maybe re organize render cpp to make more sense and be cleaner

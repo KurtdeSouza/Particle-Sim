@@ -206,7 +206,7 @@ void Grid:: update(SDL_Renderer* renderer, uint64_t tick, uint64_t prev_tick){
     float delta =  (tick - prev_tick)/1000.0f;
     
     auto start = std::chrono::high_resolution_clock::now();
-    cell_sweep_collision();
+    cell_sweep_collision(); //still need to add neighbor check
     //brute_force_particle_collision();
     //refresh_cells();
     auto end = std::chrono::high_resolution_clock::now();
