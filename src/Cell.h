@@ -17,5 +17,5 @@ public:
     void add_particle(int i);
     std::vector<std::size_t> get_particles();
     std::pair<int ,int> get_coords();
-
+    std::vector<std::pair<int, int>> get_neighbors();
 };

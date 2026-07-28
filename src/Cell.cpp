@@ -19,6 +19,9 @@ void Cell::set_particles(std::vector<size_t> new_particles){
 std::vector<size_t> Cell::get_particles(){
     return particles;
 }
+std::vector<std::pair<int, int>> Cell::get_neighbors(){
+    return neighbors;
+}
 void Cell::set_cell_neighbors( std::vector<std::pair<int, int>> new_neighbors){
     neighbors = new_neighbors;
 }

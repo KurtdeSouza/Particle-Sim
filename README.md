@@ -43,12 +43,12 @@ roughly O(n) if particles are evenly distributed across the grid.
 if concentrated into a few cells then complexity moves to roughly O(n^2)
 | Particles |Time (μs) | 
 |-----------|----------|
-| 1         | 15       | 
-| 10        | 20       |
-| 100       | 70       |
-| 500       | 800      |
-| 1000      | 1650     |
-| 2000      | 7000     |
+| 1         | 700      | 
+| 10        | 700      |
+| 100       | 900      |
+| 500       | 2300     |
+| 1000      | 3422     |
+| 2000      | 8739     |
 
 # TODO:
 - need to fix how I init grid, cells, and particles

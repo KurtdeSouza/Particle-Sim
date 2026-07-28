@@ -16,7 +16,7 @@ Grid::Grid(std::map<std::pair<int, int>, Cell> cells, std::vector<Particle> part
 void Grid::set_cells_init(std::map<std::pair<int, int>, Cell> new_cells){
 
     int next_cell = 0;
-    int cell_end = Consts::HEIGHT - next_cell;
+    int cell_end = Consts::HEIGHT;
     while(next_cell + (Consts::SIDE_LENGTH) <= cell_end){
         int y_start = 0;
         while(y_start + (Consts::SIDE_LENGTH) <= cell_end){
@@ -30,21 +30,27 @@ void Grid::set_cells_init(std::map<std::pair<int, int>, Cell> new_cells){
         
     }
 
-    std::vector<std::pair<int, int>>  new_neighbors;
     for (auto& [coords, cell] : new_cells) {
+        std::vector<std::pair<int, int>>  new_neighbors;
+
         //right neighbor
         if(coords.first + (Consts::SIDE_LENGTH*2)  <=cell_end){
             new_neighbors.emplace_back(coords.first + Consts::SIDE_LENGTH, coords.second);
+
         }
         if(coords.second + (Consts::SIDE_LENGTH*2)  <= cell_end){
             new_neighbors.emplace_back(coords.first, coords.second + Consts::SIDE_LENGTH);
+
         }
         if(coords.second + (Consts::SIDE_LENGTH*2)  <=cell_end && coords.first - Consts::SIDE_LENGTH >= 0){
             new_neighbors.emplace_back(coords.first - Consts::SIDE_LENGTH, coords.second + Consts::SIDE_LENGTH);
+
         }
-        if(coords.first + (Consts::SIDE_LENGTH*2)  <=cell_end && coords.second + (Consts::SIDE_LENGTH*2)){
+        if(coords.first + (Consts::SIDE_LENGTH*2)  <=cell_end && coords.second + (Consts::SIDE_LENGTH*2) <= cell_end){
             new_neighbors.emplace_back(coords.first + Consts::SIDE_LENGTH, coords.second + Consts::SIDE_LENGTH);
+
         }
+
         cell.set_cell_neighbors(new_neighbors);
     }
     cells = new_cells;
@@ -90,7 +96,21 @@ void Grid::cell_collision(){
         //does not do neighboring cells yet => can just get particle list for neighboring cells and run the same check
 
         std::vector<size_t> particle_list = cell.get_particles();
-        if(particle_list.size() > 1){
+        if(particle_list.size() >= 1){
+        for(auto& neighbor : cell.get_neighbors() ){
+            std::vector<size_t> neighbor_list;
+                neighbor_list = cells.at(neighbor).get_particles();
+
+            size_t new_elements = neighbor_list.size();
+            if(new_elements > 0){
+                particle_list.insert(particle_list.end(), 
+            std::make_move_iterator(neighbor_list.begin()), 
+            std::make_move_iterator(neighbor_list.end()));
+            }
+
+        }
+
+        
             for(size_t i = 0; i < particle_list.size() - 1; i++){
                 Particle &p1 = particles.at(particle_list.at(i));
                 for(size_t j = i + 1; j < particle_list.size(); j++){
