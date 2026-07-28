@@ -6,4 +6,5 @@ namespace Consts {
     inline constexpr int FRAME_RATE = 7; //1000ms/144 hz  = 7ms
     inline constexpr int RADIUS = 10;
     inline constexpr int SIDE_LENGTH = RADIUS * 2;
+    inline constexpr int M_HASH = 1 + WIDTH;
 }

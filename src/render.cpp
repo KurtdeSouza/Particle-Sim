@@ -12,7 +12,7 @@
 
 int main(int argc, char* argv[]) {
     // 0. init simulation parameters:
-    std::map<std::pair<int, int>, Cell>  cells;
+    std::unordered_map<int, Cell>  cells;
     std::vector<Particle> p{};
      int num_part;
     if(argc > 1){

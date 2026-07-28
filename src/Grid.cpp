@@ -5,15 +5,23 @@
 #include "Grid.h"
 #include <random>
 #include <chrono>
-#include <map>
+#include <unordered_map>
 #include <cmath>
 //edit map to be unordred map instead and make custom hash function
-Grid::Grid(std::map<std::pair<int, int>, Cell> cells, std::vector<Particle> particles, int num_particles){
+Grid::Grid(std::unordered_map<int, Cell> cells, std::vector<Particle> particles, int num_particles){
     set_particle_init_rand(particles, num_particles);
     //custom_particle_init(particles);
     set_cells_init(cells);
 }
-void Grid::set_cells_init(std::map<std::pair<int, int>, Cell> new_cells){
+int Grid::cell_hash(std::pair<int, int> coords){
+    return coords.first + (Consts::M_HASH * coords.second);
+}
+std::pair<int, int> Grid::unhash(int hashed){
+    int y = hashed/Consts::M_HASH;
+    int x = hashed % Consts::M_HASH;
+    return {x,y};
+}
+void Grid::set_cells_init(std::unordered_map<int, Cell> new_cells){
 
     int next_cell = 0;
     int cell_end = Consts::HEIGHT;
@@ -22,32 +30,33 @@ void Grid::set_cells_init(std::map<std::pair<int, int>, Cell> new_cells){
         while(y_start + (Consts::SIDE_LENGTH) <= cell_end){
             std::pair<int, int> new_coords = {next_cell, y_start};
             Cell new_cell(Consts::SIDE_LENGTH, new_coords, {}, {});
-            new_cells.insert({new_coords, new_cell});
+            new_cells.insert({cell_hash(new_coords), new_cell});
             y_start += Consts::SIDE_LENGTH;
         }
         next_cell += Consts::SIDE_LENGTH;
  
         
     }
-
-    for (auto& [coords, cell] : new_cells) {
-        std::vector<std::pair<int, int>>  new_neighbors;
-
+//int cell
+//need to reverse the hash
+    for (auto& [hashed_coords, cell] : new_cells) {
+        std::vector<int>  new_neighbors;
+        std::pair<int, int> coords = unhash(hashed_coords);
         //right neighbor
         if(coords.first + (Consts::SIDE_LENGTH*2)  <=cell_end){
-            new_neighbors.emplace_back(coords.first + Consts::SIDE_LENGTH, coords.second);
+            new_neighbors.emplace_back(cell_hash({coords.first + Consts::SIDE_LENGTH, coords.second}));
 
         }
         if(coords.second + (Consts::SIDE_LENGTH*2)  <= cell_end){
-            new_neighbors.emplace_back(coords.first, coords.second + Consts::SIDE_LENGTH);
+            new_neighbors.emplace_back(cell_hash({coords.first, coords.second + Consts::SIDE_LENGTH}));
 
         }
         if(coords.second + (Consts::SIDE_LENGTH*2)  <=cell_end && coords.first - Consts::SIDE_LENGTH >= 0){
-            new_neighbors.emplace_back(coords.first - Consts::SIDE_LENGTH, coords.second + Consts::SIDE_LENGTH);
+            new_neighbors.emplace_back(cell_hash({coords.first - Consts::SIDE_LENGTH, coords.second + Consts::SIDE_LENGTH}));
 
         }
         if(coords.first + (Consts::SIDE_LENGTH*2)  <=cell_end && coords.second + (Consts::SIDE_LENGTH*2) <= cell_end){
-            new_neighbors.emplace_back(coords.first + Consts::SIDE_LENGTH, coords.second + Consts::SIDE_LENGTH);
+            new_neighbors.emplace_back(cell_hash({coords.first + Consts::SIDE_LENGTH, coords.second + Consts::SIDE_LENGTH}));
 
         }
 
@@ -72,6 +81,7 @@ void Grid::set_cells_init(std::map<std::pair<int, int>, Cell> new_cells){
 int Grid::get_cell_length(){
     return cell_length;
 }
+//reverse the hash here
 std::pair<int, int> Grid::get_closest_cell(std::pair<int, int> part_coords){
     int x = ((part_coords.first / get_cell_length()) * get_cell_length());
     int y = ((part_coords.second / get_cell_length()) * get_cell_length());
@@ -81,9 +91,9 @@ void Grid::populate_cells(){
     for(std::size_t i = 0; i < particles.size() ; i++){
        std::pair<int, int> part_coords = particles[i].get_int_coords();
 
-       std::pair<int, int> cell_coords = get_closest_cell(part_coords);
-       if(cells.count(cell_coords) > 0){
-               cells.at(cell_coords).add_particle(i); // cell object, add particle index to the particle list
+       int cell_coords_hashed = cell_hash(get_closest_cell(part_coords));
+       if(cells.count(cell_coords_hashed) > 0){
+               cells.at(cell_coords_hashed).add_particle(i); // cell object, add particle index to the particle list
 
        }
 

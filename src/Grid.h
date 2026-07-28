@@ -3,18 +3,18 @@
 #include <vector>
 #include "constants.h"
 #include <SDL2/SDL.h>
-#include <map>
+#include <unordered_map>
 
 class Grid{
 private:
-    std::map<std::pair<int, int>, Cell> cells;
+    std::unordered_map<int, Cell> cells;
     int width = Consts::WIDTH;
     int height = Consts::HEIGHT;
     std::vector<Particle> particles;
     int cell_length = Consts::SIDE_LENGTH;
 public:
-    Grid(std::map<std::pair<int, int>, Cell> cells, std::vector<Particle> new_particles, int number_particles);
-    void set_cells_init(std::map<std::pair<int, int>, Cell> new_cells);
+    Grid(std::unordered_map<int, Cell> cells, std::vector<Particle> new_particles, int number_particles);
+    void set_cells_init(std::unordered_map<int, Cell> new_cells);
     void set_particle_init_rand(std::vector<Particle> new_p, int num_particles);
     void update(SDL_Renderer* renderer, uint64_t tick, uint64_t prev_tick);
     void draw_circle(Particle p, SDL_Renderer* renderer );
@@ -25,5 +25,8 @@ public:
     void populate_cells();
     void cell_sweep_collision();
     void cell_collision();
+    int cell_hash(std::pair<int, int> coords);
+    std::pair<int, int> unhash(int hashed);
+
 };
 
