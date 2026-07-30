@@ -62,4 +62,6 @@ if concentrated into a few cells then complexity moves to roughly O(n^2)
 | 1000      | 2342     |
 | 2000      | 5000     |
 # TODO:
-
+- custom allocator and smart pointer replacement for particke object (improves memory performance because we won't need to copy the objects)
+- multi-threading
+- ui (reverse time slider (reverse direction of all particles), fps counter, buttons on window)
