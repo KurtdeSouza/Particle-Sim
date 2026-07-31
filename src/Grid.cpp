@@ -152,7 +152,7 @@ void Grid:: set_particle_init_rand(std::vector<Particle> new_p, int num_particle
     std::uniform_real_distribution<float> distr(min_val, max_val);
     std::uniform_int_distribution<int> distr_X(0, max_height);
     std::uniform_int_distribution<int> distr_Y(0, max_width);
-    int radius = 10;
+    int radius = Consts::RADIUS;
     float random_num_x, random_num_y;
     int rand_x, rand_y;
     for(int i = 0; i < num_particles; i++){
